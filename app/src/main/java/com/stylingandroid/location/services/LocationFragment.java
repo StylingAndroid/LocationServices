@@ -29,7 +29,7 @@ public class LocationFragment extends Fragment {
     private TextView longitudeValue;
     private TextView accuracyValue;
 
-    private FusedLocationProviderClient locationProviderClient = null;
+    private FusedLocationProviderClient fusedLocationProviderClient = null;
 
     @Override
     public void onStart() {
@@ -72,21 +72,26 @@ public class LocationFragment extends Fragment {
     @DebugLog
     @SuppressLint("MissingPermission")
     void registerForLocationUpdates() {
-        locationProviderClient = getFusedLocationProviderClient();
-        locationProviderClient.requestLocationUpdates(LocationRequest.create(), locationCallback, Looper.myLooper());
-    }
-
-    @DebugLog
-    void  unregisterForLocationUpdates() {
-        if (locationProviderClient != null) {
-            locationProviderClient.removeLocationUpdates(locationCallback);
-        }
+        FusedLocationProviderClient locationProviderClient = getFusedLocationProviderClient();
+        LocationRequest locationRequest = LocationRequest.create();
+        Looper looper = Looper.myLooper();
+        locationProviderClient.requestLocationUpdates(locationRequest, locationCallback, looper);
     }
 
     @DebugLog
     @NonNull
     private FusedLocationProviderClient getFusedLocationProviderClient() {
-        return LocationServices.getFusedLocationProviderClient(getActivity());
+        if (fusedLocationProviderClient == null) {
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        }
+        return fusedLocationProviderClient;
+    }
+
+    @DebugLog
+    void  unregisterForLocationUpdates() {
+        if (fusedLocationProviderClient != null) {
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        }
     }
 
     private LocationCallback locationCallback = new LocationCallback() {
