@@ -53,8 +53,9 @@ public class MainActivity extends AppCompatActivity {
             if (grantResult != PackageManager.PERMISSION_GRANTED) {
                 Snackbar.make(fragmentContainer, R.string.no_permissions, Snackbar.LENGTH_LONG).show();
                 finish();
+                return;
             }
         }
-        locationFragment.registerForLocationUpdates();
+        createLocationFragment();
     }
 }
